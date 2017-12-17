@@ -55,7 +55,7 @@ def subtract_vectors(vector1, vector2):
     return Vector(*result)
 
 
-if __name__ == '__main__':
+def section1_validation():
     p1 = Point(1, 2, 1)
     p2 = Point(0, 4, 4)
     v1 = Vector(2, 0, 0)
@@ -72,3 +72,8 @@ if __name__ == '__main__':
 
     p2.subtractVectorFromPoint(v2)
     p2.drawPoint()
+
+
+if __name__ == '__main__':
+    section1_validation()
+
