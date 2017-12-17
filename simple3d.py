@@ -25,6 +25,10 @@ class Point(object):
         new_vector = subtract_vectors(self, point)
         return new_vector
 
+    def setPointToPoint(self, point):
+        self.value = point.value
+        return None
+
 
 class Vector(object):
     def __init__(self, x, y, z):
@@ -69,6 +73,15 @@ class Vector(object):
         matrix.append([1, 0, 0])
         matrix.append([0, math.cos(theta), -1 * math.sin(theta)])
         matrix.append([0, math.sin(theta), math.cos(theta)])
+        new_vector = linear_transform(self, matrix)
+        self.value = new_vector.value
+        return self
+
+    def scale(self, scaling_tuple):
+        matrix = list()
+        matrix.append([scaling_tuple[0], 0, 0])
+        matrix.append([0, scaling_tuple[1], 0])
+        matrix.append([0, 0, scaling_tuple[2]])
         new_vector = linear_transform(self, matrix)
         self.value = new_vector.value
         return self
