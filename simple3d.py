@@ -3,10 +3,16 @@ import math
 
 class Point(object):
     def __init__(self, x, y, z):
-        self.value = (x, y, z)
+        self.value = (float(x), float(y), float(z))
 
     def __repr__(self):
         return '{0}'.format(self.value)
+
+    def project_2d(self, win_width, win_height, fov, viewer_distance):
+        factor = fov / (viewer_distance + self.value[2])
+        x = self.value[0] * factor + win_width / 2
+        y = self.value[1] * factor + win_height / 2
+        return x, y
 
     def drawPoint(self):
         print('{0}'.format(self.value))
@@ -32,7 +38,7 @@ class Point(object):
 
 class Vector(object):
     def __init__(self, x, y, z):
-        self.value = (x, y, z)
+        self.value = (float(x), float(y), float(z))
 
     def __repr__(self):
         return '{0}'.format(self.value)
