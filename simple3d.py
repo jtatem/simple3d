@@ -1,4 +1,7 @@
 import math
+import pygame
+import random
+import sys
 
 
 class Point(object):
@@ -133,6 +136,25 @@ def section1_validation():
     p2.drawPoint()
 
 
+def draw_loop():
+    clock = pygame.time.Clock()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+        clock.tick(50)
+        screen.fill((0, 0, 0))
+
+        screen.fill((255, 255, 255), (random.randrange(0, 640), random.randrange(0, 480), 2, 2))
+
+        pygame.display.flip()
+
+
 if __name__ == '__main__':
-    pass
+    pygame.init()
+    screen = pygame.display.set_mode((640, 480))
+    pygame.display.set_caption('simple3d')
+
+    draw_loop()
+
 
