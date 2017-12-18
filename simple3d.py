@@ -11,14 +11,18 @@ class Point(object):
     def __repr__(self):
         return '{0}'.format(self.value)
 
-    def project_2d(self, win_width, win_height, fov, viewer_distance):
+    def project_2d(self, fov, viewer_distance):
+        win_width = screen.get_width()
+        win_height = screen.get_height()
         factor = fov / (viewer_distance + self.value[2])
         x = self.value[0] * factor + win_width / 2
         y = self.value[1] * factor + win_height / 2
         return x, y
 
     def drawPoint(self):
-        print('{0}'.format(self.value))
+        x, y = self.project_2d(90, 4)
+        screen.fill((abs(x % 255), 0, 0), (x, y, 1, 1))
+        print('Point {0} drawn'.format(self.value))
 
     def addVectorToPoint(self, vector):
         new_vector = add_vectors(self, vector)
@@ -117,27 +121,13 @@ def linear_transform(vector, transform_matrix):
     return Vector(x, y, z)
 
 
-def section1_validation():
-    p1 = Point(1, 2, 1)
-    p2 = Point(0, 4, 4)
-    v1 = Vector(2, 0, 0)
-
-    p1.drawPoint()
-    p2.drawPoint()
-
-    v2 = p1.subtractPointFromPoint(p2)
-
-    v1 = v1.addVectorToVector(v2)
-
-    p1.addVectorToPoint(v1)
-    p1.drawPoint()
-
-    p2.subtractVectorFromPoint(v2)
-    p2.drawPoint()
-
-
 def draw_loop():
     clock = pygame.time.Clock()
+    points = [Point(1, 0, 0),
+              Point(-1, 0, 0),
+              Point(1, 1, 0),
+              Point(-1, 1, 0)
+              ]
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -145,7 +135,9 @@ def draw_loop():
         clock.tick(50)
         screen.fill((0, 0, 0))
 
-        screen.fill((255, 255, 255), (random.randrange(0, 640), random.randrange(0, 480), 2, 2))
+        for p in points:
+            p.drawPoint()
+            p.addVectorToPoint(Vector(0, 0, -0.01))
 
         pygame.display.flip()
 
