@@ -22,9 +22,14 @@ class Point(object):
         return x, y
 
     def drawPoint(self):
-        x, y = self.project_2d(90, 4)
-        screen.fill((abs(x % 255), 255, 255), (x, y, 1, 1))
-        print('Point ({0}, {1}, {2}) drawn'.format(self.x, self.y, self.z))
+        x, y = self.project_2d(90, 50)
+        if x >= 0 and x <= 640 and y >= 0 and y <= 480:
+            #print('Point ({0}, {1}, {2}) drawing at {3}, {4} screen coords'.format(self.x, self.y, self.z, x, y))
+            screen.fill((random.randrange(0, 256), random.randrange(0, 256), random.randrange(0, 256)), (x, y, 1, 1))
+        else:
+            #print('Point ({0}, {1}, {2}) exceeds screen area, not drawn'.format(self.x, self.y, self.z, x, y))
+            pass
+
 
     def addVectorToPoint(self, vector):
         new_vector = add_vectors(self, vector)
@@ -98,7 +103,7 @@ class Vector(object):
         matrix = list()
         matrix.append([scale_x, 0, 0])
         matrix.append([0, scale_y, 0])
-        matrix.append([0, 0, scale_z[2]])
+        matrix.append([0, 0, scale_z])
         new_vector = linear_transform(self, matrix)
         self.x, self.y, self.z = new_vector.x, new_vector.y, new_vector.z
         return self
@@ -125,28 +130,82 @@ def linear_transform(vector, transform_matrix):
 
 def draw_loop():
     clock = pygame.time.Clock()
-    points = [Point(1, 0, 0),
-              Point(-1, 0, 0),
-              Point(1, 1, 0),
-              Point(-1, 1, 0)
-              ]
+
+    points = list()
+    num_points = 10000
+
+    for x in range(0, num_points):
+        points.append(Point(random.randrange(-5, 5), random.randrange(-5, 5), random.randrange(-5, 5)))
+
     while True:
-        #return None
+        pressed_key = None
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                pressed_key = event.key
             if event.type == pygame.QUIT:
                 sys.exit()
+
+        if pressed_key is not None:
+            if pressed_key == pygame.K_s:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.scale(0.8, 0.8, 0.8))
+            elif pressed_key == pygame.K_w:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.scale(1.2, 1.2, 1.2))
+            elif pressed_key == pygame.K_e:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.rotate_xy(5))
+            elif pressed_key == pygame.K_q:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.rotate_xy(-5))
+            elif pressed_key == pygame.K_z:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.rotate_xz(5))
+            elif pressed_key == pygame.K_c:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.rotate_xz(-5))
+            elif pressed_key == pygame.K_a:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.rotate_yz(5))
+            elif pressed_key == pygame.K_d:
+                origin = Point(0, 0, 0)
+                for x in range(0, len(points)):
+                    temp_vector = points[x].subtractPointFromPoint(origin)
+                    points[x].setPointToPoint(origin)
+                    points[x].addVectorToPoint(temp_vector.rotate_yz(-5))
+
+
         clock.tick(50)
         screen.fill((0, 0, 0))
-
         for p in points:
             p.drawPoint()
-            p.addVectorToPoint(Vector(0, 0, -0.01))
-
         pygame.display.flip()
 
 
 if __name__ == '__main__':
     pygame.init()
+    pygame.key.set_repeat(50, 50)
     screen = pygame.display.set_mode((640, 480))
     pygame.display.set_caption('simple3d')
 
